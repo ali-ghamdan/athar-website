@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Athar (جامع كتب الأثر) — تطبيق سطح مكتب لقراءة كتب الآثار والتراجم، ببحثٍ ذكي في المتون والأسانيد وتخريج آلي، ويعمل دون اتصال." />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/svg+xml" href="public/app-icon.svg" />
+    <title>Athar — جامع كتب الأثر</title>
+    <link rel="preload" href="fonts/cairo-arabic-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="fonts/amiri-arabic-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      (function () {
+        var stored = localStorage.getItem("theme");
+        var theme = stored === "light" || stored === "dark" ? stored : null;
+        if (theme) document.documentElement.setAttribute("data-theme", theme);
+        else if (window.matchMedia("(prefers-color-scheme: dark)").matches)
+          document.documentElement.setAttribute("data-theme", "dark");
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#features">تخطَّ إلى المحتوى</a>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="#hero">
+          <img class="brand-icon" src="public/app-icon.svg" alt="" width="28" height="28" />
+          <span class="brand-name">جامع كتب الأثر</span>
+        </a>
+        <nav class="site-nav" aria-label="التنقل الرئيسي">
+          <a href="#features">المميزات</a>
+          <a href="#screens">الشاشات</a>
+          <a href="#download">التحميل</a>
+          <a href="#contact">تواصل معنا</a>
+        </nav>
+        <div class="header-actions">
+          <a class="icon-link" href="https://github.com/ali-ghamdan/athar-website" target="_blank" rel="noopener" aria-label="مستودع GitHub">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+          </a>
+          <button class="theme-toggle" type="button" aria-label="تبديل المظهر: النظام، فاتح، داكن" aria-pressed="false">
+            <svg class="icon icon-system" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <svg class="icon icon-sun" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            <svg class="icon icon-moon" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="hero" class="hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <p class="badge" id="hero-badge">الإصدار 4/3/1448 هـ</p>
+            <h1>اقرأ كتب الآثار والتراجم، بلا إنترنت</h1>
+            <p class="hero-sub">
+              تطبيق سطح مكتب مفتوح المصدر يجمّع كتب الآثار وتراجم الرواة، ببحثٍ ذكي في المتون
+              والأسانيد، وتخريج آلي، وواجهة عربية كاملة.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-lg" href="#download">حمّل التطبيق مجانًا</a>
+              <a class="btn btn-ghost btn-lg" href="https://github.com/ali-ghamdan/athar-website/releases" target="_blank" rel="noopener">جميع الإصدارات</a>
+            </div>
+            <p class="hero-note">ويندوز · لينكس — النسخة الحالية <bdi>4/3/1448 هـ</bdi></p>
+          </div>
+
+          <div class="hero-shot">
+            <img class="theme-shot light" src="screenshots/light/home.png" alt="الشاشة الرئيسية للتطبيق: أثر اليوم وإحصاءات المكتبة" width="640" loading="eager" />
+            <img class="theme-shot dark" src="screenshots/dark/home.png" alt="الشاشة الرئيسية للتطبيق في الوضع الداكن" width="640" loading="eager" />
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="section">
+        <div class="container">
+          <h2>لماذا جامع كتب الأثر؟</h2>
+          <p class="section-sub">كل ما تحتاجه لقراءة الآثار والتراجم في تطبيق واحد.</p>
+          <div class="features-grid">
+            <article class="card">
+              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <h3>بحث ذكي في المتون والأسانيد</h3>
+              <p>فهارس عربية تتجاهل التشكيل والهمزات، مع تصفية بالكتب والرواة، وسجلٍ محفوظ، وتصدير النتائج.</p>
+            </article>
+            <article class="card">
+              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.4 1 2.3h6c0-.9.4-1.8 1-2.3A7 7 0 0 0 12 2Z"/></svg>
+              <h3>تخريج آلي</h3>
+              <p>أدخل نص الأثر واعرف مواضعه في كتب السنة الأخرى، مع إشاراتٍ إلى مراتب الرواة.</p>
+            </article>
+            <article class="card">
+              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <h3>تراجم الرواة</h3>
+              <p>سير ومراتب الرواة وأقوال الجرح والتعديل، مترابطة مع كل أثر تقرؤه.</p>
+            </article>
+            <article class="card">
+              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <h3>يعمل دون اتصال</h3>
+              <p>حمّل الكتب مرّة واحدة، واقرأها في أي وقت حتى بلا إنترنت.</p>
+            </article>
+            <article class="card">
+              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+              <h3>أثر اليوم</h3>
+              <p>أثرٌ جديد كل يوم على الشاشة الرئيسية، مع زر تخريج بنقرة واحدة.</p>
+            </article>
+            <article class="card">
+              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+              <h3>تشكيل متكامل</h3>
+              <p>اعرض النصوص مشكولة أو بدون تشكيل، واضبط حجم الخط حسب راحتك.</p>
+            </article>
+            <article class="card">
+              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <h3>نسخ بالعزو</h3>
+              <p>انسخ الأثر مع عزو المصدر ورقم الموضع، أو النص وحده.</p>
+            </article>
+            <article class="card">
+              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+              <h3>تبويبات متعددة</h3>
+              <p>افتح أكثر من كتاب وموضع بحث جنبًا إلى جنب، مع سجل للتبويبات المغلقة.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="screens" class="section section-alt">
+        <div class="container">
+          <h2>جولة في الشاشات</h2>
+          <p class="section-sub">من المكتبة إلى القارئ إلى التراجم — كل ما تحتاجه في شاشات مرتبة.</p>
+
+          <article class="page-showcase">
+            <div class="page-shot">
+              <img class="theme-shot light" src="screenshots/light/home.png" alt="الشاشة الرئيسية" width="640" loading="lazy" />
+              <img class="theme-shot dark" src="screenshots/dark/home.png" alt="الشاشة الرئيسية في الوضع الداكن" width="640" loading="lazy" />
+            </div>
+            <div class="page-copy">
+              <h3>الشاشة الرئيسية</h3>
+              <p class="page-summary">شاشة ترحيب تُظهر إحصاءات مكتبتك، «أثر اليوم»، وأحدث الكتب المفتوحة.</p>
+              <ul class="feature-list">
+                <li>أثر اليوم: أثرٌ جديد كل يوم من كتبك المحملة</li>
+                <li>إحصاءات المكتبة: عدد الكتب والرواة والروايات</li>
+                <li>نسخ الأثر مع العزو أو بدونه</li>
+                <li>زر تخريج مباشر على أثر اليوم</li>
+                <li>إظهار وإخفاء التشكيل بضغطة</li>
+                <li>آخر الكتب المفتوحة مع «متابعة القراءة»</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="page-showcase flip">
+            <div class="page-shot">
+              <img class="theme-shot light" src="screenshots/light/search.png" alt="صفحة البحث" width="640" loading="lazy" />
+              <img class="theme-shot dark" src="screenshots/dark/search.png" alt="صفحة البحث في الوضع الداكن" width="640" loading="lazy" />
+            </div>
+            <div class="page-copy">
+              <h3>البحث</h3>
+              <p class="page-summary">بحث نصي متقدم في نصوص الكتب المحملة، مع فلاتر وتصدير للنتائج.</p>
+              <ul class="feature-list">
+                <li>نوعان للبحث: بحث ذكي بفهارس تتجاهل التشكيل، وبحث بسيط</li>
+                <li>تصفية بالكتب وبالرواة مع عدّادات</li>
+                <li>إبراز كلمات المطابقة داخل النتائج</li>
+                <li>سجل محفوظ حتى 20 عملية مع استعادة الفلاتر</li>
+                <li>تصدير النتائج CSV وJSON مع حكم السند</li>
+                <li>عرض تدريجي وجدول نتائج قابل للسحب</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="page-showcase">
+            <div class="page-shot">
+              <img class="theme-shot light" src="screenshots/light/allbooks.png" alt="قائمة الكتب" width="640" loading="lazy" />
+              <img class="theme-shot dark" src="screenshots/dark/allbooks.png" alt="قائمة الكتب في الوضع الداكن" width="640" loading="lazy" />
+            </div>
+            <div class="page-copy">
+              <h3>قائمة الكتب</h3>
+              <p class="page-summary">تصفح مكتبة الكتب المتاحة، وحمّلها وأدر تحميلاتك من مكان واحد.</p>
+              <ul class="feature-list">
+                <li>جدول بالعنوان والمؤلف والقسم والحجم والحالة</li>
+                <li>تحميل مع إيقاف مؤقت واستئناف وإلغاء ونسبة مئوية حية</li>
+                <li>شارات الحالة: محمل، قيد التحميل، جزئي، تالف</li>
+                <li>تصنيفات جانبية بعدّادات وفلترة فورية</li>
+                <li>بحث في القائمة</li>
+                <li>زر «تحديث» لجلب الكتب الجديدة من المستودع</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="page-showcase flip">
+            <div class="page-shot">
+              <img class="theme-shot light" src="screenshots/light/downloadedbooks.png" alt="مكتبتي" width="640" loading="lazy" />
+              <img class="theme-shot dark" src="screenshots/dark/downloadedbooks.png" alt="مكتبتي في الوضع الداكن" width="640" loading="lazy" />
+            </div>
+            <div class="page-copy">
+              <h3>مكتبتي</h3>
+              <p class="page-summary">إدارة الكتب المحملة على جهازك مع فرز وفلاتر وإحصاءات إجمالية.</p>
+              <ul class="feature-list">
+                <li>فرز بكل الأعمدة تصاعديًا أو تنازليًا</li>
+                <li>فلاتر القسم والمؤلف</li>
+                <li>إحصاءات: عدد الكتب والمساحة الكلية ومجموع الروايات</li>
+                <li>بحث فوري في المكتبة</li>
+                <li>فتح الكتاب بنقرة مع حفظ موضع القراءة</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="page-showcase">
+            <div class="page-shot">
+              <img class="theme-shot light" src="screenshots/light/narration.png" alt="شاشة القراءة" width="640" loading="lazy" />
+              <img class="theme-shot dark" src="screenshots/dark/narration.png" alt="شاشة القراءة في الوضع الداكن" width="640" loading="lazy" />
+            </div>
+            <div class="page-copy">
+              <h3>قارئ الآثار</h3>
+              <p class="page-summary">قارئ نصوص مسندة كامل: فهرس موضوعات، تنقّل، نسخ، تخريج، وإبلاغ عن الأخطاء.</p>
+              <ul class="feature-list">
+                <li>فهرس الكتاب بالموضوعات مع تتبع الموضع تلقائيًا</li>
+                <li>التنقل بين الآثار: أزرار، أسهم لوحة المفاتيح، وCtrl+F</li>
+                <li>شريط تقدم القراءة «الأثر X من Y»</li>
+                <li>نسخ الأثر مع العزو أو بدونه</li>
+                <li>روابط الرواة داخل السند مع شارة درجة كل راوٍ</li>
+                <li>زر التخريج الآلي والإبلاغ عن خطأ النص</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="page-showcase flip">
+            <div class="page-shot">
+              <img class="theme-shot light" src="screenshots/light/narrator.png" alt="صفحة ترجمة الراوي" width="640" loading="lazy" />
+              <img class="theme-shot dark" src="screenshots/dark/narrator.png" alt="صفحة ترجمة الراوي في الوضع الداكن" width="640" loading="lazy" />
+            </div>
+            <div class="page-copy">
+              <h3>التراجم</h3>
+              <p class="page-summary">بطاقة تعريفية شاملة للراوي: صفاته، ترجمته، مروياته، والجرح والتعديل.</p>
+              <ul class="feature-list">
+                <li>بطاقة تعريف بالاسم والكنية والنسب والمذهب والطبقة</li>
+                <li>الترجمة من «تهذيب الكمال»</li>
+                <li>أقوال النقاد في الجرح والتعديل مرقّمة بأسماء ناقديها</li>
+                <li>مروياته في الكتب مع عدد الروايات وفتحها في البحث</li>
+                <li>الشيوخ والتلاميذ مع بحث وفتح الترجمة بنقرة</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="page-showcase">
+            <div class="page-shot">
+              <img class="theme-shot light" src="screenshots/light/settings.png" alt="صفحة الإعدادات" width="640" loading="lazy" />
+              <img class="theme-shot dark" src="screenshots/dark/settings.png" alt="صفحة الإعدادات في الوضع الداكن" width="640" loading="lazy" />
+            </div>
+            <div class="page-copy">
+              <h3>الإعدادات</h3>
+              <p class="page-summary">خصّص المظهر والخطوط والتشكيل وسجل البحث، واطّلع على بيانات التطبيق.</p>
+              <ul class="feature-list">
+                <li>الوضع الفاتح والداكن</li>
+                <li>ستة خطوط عربية مع معاينة حية</li>
+                <li>منزلق حجم الخط العام (13–26)</li>
+                <li>مفتاح إظهار التشكيل</li>
+                <li>حفظ خيارات البحث وسجلها</li>
+                <li>دليل درجات الرواة السبع وبيانات التطبيق</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="download" class="section section-alt">
+        <div class="container">
+          <h2>التحميل</h2>
+          <p class="section-sub">
+            يكتشف الموقع نظامك تلقائيًا، أو اختر النظام يدويًا. كل الإصدارات منشورة على GitHub.
+          </p>
+          <div class="download-primary">
+            <a class="btn btn-primary btn-lg" id="primary-download" href="https://github.com/ali-ghamdan/athar-website/releases/latest" target="_blank" rel="noopener">
+              تحميل لجهازك
+            </a>
+            <p class="download-meta" id="download-meta">الإصدار 4/3/1448 هـ</p>
+          </div>
+          <div class="os-grid" id="os-grid">
+            <article class="card os-card" data-os="windows">
+              <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10 4.6v6.9H3V5.5ZM11 4.5 21 3v8.5h-10V4.5ZM21 12.5v8.5l-10-1.5v-7h10ZM10 13.4v7l-7-1V13.4h7Z"/></svg>
+              <h3>ويندوز</h3>
+              <p class="os-arch"><bdi>x64</bdi></p>
+              <a class="btn btn-outline os-link" href="#" target="_blank" rel="noopener">تحميل</a>
+            </article>
+            <article class="card os-card" data-os="linux">
+              <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10V8a2 2 0 0 1 2-2h1V4a2 2 0 0 1 4 0v2h2a2 2 0 0 1 2 2v2"/><path d="M4 10h12v2a2 2 0 0 1-2 2h-2v6h-4v-6H6a2 2 0 0 1-2-2v-2Z"/></svg>
+              <h3>لينكس</h3>
+              <p class="os-arch"><bdi>AppImage · deb</bdi></p>
+              <a class="btn btn-outline os-link" href="#" target="_blank" rel="noopener">تحميل</a>
+            </article>
+          </div>
+          <p class="download-alt">
+            <a href="https://github.com/ali-ghamdan/athar-website/releases" target="_blank" rel="noopener">كل الإصدارات على GitHub ←</a>
+          </p>
+        </div>
+      </section>
+
+      <section id="contact" class="section">
+        <div class="container contact-inner">
+          <h2>تواصل معنا</h2>
+          <p class="section-sub">
+            لديك ملاحظة أو اقتراح أو مشكلة في التطبيق؟ افتح موضوعًا في صفحة المشكلات
+            وسنناقشها معك.
+          </p>
+          <a class="btn btn-primary btn-lg" href="https://github.com/ali-ghamdan/athar-website/issues/new" target="_blank" rel="noopener">
+            افتح موضوعًا في GitHub Issues
+          </a>
+        </div>
+      </section>
+
+      <section class="section cta">
+        <div class="container cta-inner">
+          <h2>ابدأ القراءة اليوم</h2>
+          <p class="section-sub">مجاني ومفتوح المصدر، وواجهته عربية بالكامل.</p>
+          <a class="btn btn-primary btn-lg" href="#download">حمّل التطبيق الآن</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <img src="public/app-icon.svg" alt="" width="24" height="24" />
+          <span>جامع كتب الأثر — <bdi>Athar</bdi></span>
+        </div>
+        <p class="footer-meta" id="footer-meta">الإصدار 4/3/1448 هـ</p>
+        <nav class="footer-nav" aria-label="روابط المشروع">
+          <a href="https://github.com/ali-ghamdan/athar-website" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/ali-ghamdan/athar-website/releases" target="_blank" rel="noopener">الإصدارات</a>
+          <a href="https://github.com/ali-ghamdan/athar-website/issues" target="_blank" rel="noopener">المشكلات</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="js/main.js" defer></script>
+  </body>
+</html>
