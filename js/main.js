@@ -14,6 +14,7 @@
   var ARCH_BY_OS = {
     windows: "x64",
     linux: "x64",
+    mac: "arm64",
   };
   var FALLBACK_ASSETS = {
     windows: {
@@ -23,6 +24,10 @@
     linux: {
       x64: "Athar_" + FALLBACK_VERSION + "_amd64.deb",
       arm64: "Athar_" + FALLBACK_VERSION + "_arm64.deb",
+    },
+    mac: {
+      arm64: "Athar_" + FALLBACK_VERSION + "_aarch64.dmg",
+      x64: "Athar_" + FALLBACK_VERSION + "_x64.dmg",
     },
   };
 
@@ -34,6 +39,7 @@
     var platform = (uaData && uaData.platform) || navigator.platform || "";
     var ua = navigator.userAgent || "";
     if (/win/i.test(platform) || /win/i.test(ua)) return "windows";
+    if (/mac/i.test(platform) || /mac/i.test(ua)) return "mac";
     if (/linux/i.test(platform) || /linux/i.test(ua)) return "linux";
     return null;
   }
@@ -60,6 +66,7 @@
     var lower = name.toLowerCase();
     if (os === "windows") return /\.(exe|msi)$/.test(lower);
     if (os === "linux") return /\.(appimage|deb|rpm|tar\.gz)$/.test(lower);
+    if (os === "mac") return /\.dmg$/.test(lower);
     return false;
   }
 
@@ -68,6 +75,10 @@
     if (os === "linux") {
       if (arch === "arm64") return /arm64|aarch64/.test(lower);
       if (arch === "x64") return /amd64|x86_64|x64/.test(lower);
+    }
+    if (os === "mac") {
+      if (arch === "arm64") return /aarch64|arm64/.test(lower);
+      if (arch === "x64") return /x64|x86_64/.test(lower);
     }
     return true;
   }
@@ -80,10 +91,11 @@
       .map(function (a) {
         var score = 0;
         if (archMatch(a.name, os, arch)) score += 2;
-        if (/setup|\.exe$/.test(a.name)) score += 1;
+        if (/\.exe$/.test(a.name)) score += 1;
         if (/\.msi$/.test(a.name)) score += 0;
         if (/\.deb$/.test(a.name)) score += 1;
         if (/\.appimage$/.test(a.name)) score += 0;
+        if (/\.dmg$/.test(a.name)) score += 1;
         if (/-updater/.test(a.name)) score -= 10;
         return { asset: a, score: score };
       })
@@ -126,7 +138,7 @@
 
     osCards.forEach(function (card) {
       var os = card.getAttribute("data-os");
-      var arch = os === "linux" ? ARCH_BY_OS.linux : ARCH_BY_OS.windows;
+      var arch = ARCH_BY_OS[os] || "x64";
       var link = card.querySelector(".os-link");
       var asset = pickAsset(assets, os, arch);
       var url = null;
