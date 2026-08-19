@@ -3,13 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Athar (جامع كتب الأثر) — تطبيق سطح مكتب لقراءة كتب الآثار والتراجم، ببحثٍ ذكي في المتون والأسانيد وتخريج آلي، ويعمل دون اتصال." />
+    <title>جامع كتب الأثر — اقرأ كتب الآثار والتراجم بلا إنترنت | Athar</title>
+    <meta name="description" content="Athar (جامع كتب الأثر) — تطبيق سطح مكتب مفتوح المصدر لقراءة كتب الآثار وتراجم الرواة، ببحثٍ ذكي في المتون والأسانيد وتخريج آلي، ويعمل دون اتصال." />
+    <meta name="keywords" content="كتب الآثار, الآثار, التراجم, تراجم الرواة, الجرح والتعديل, كتب السنة, برامج إسلامية, Athar, جامع كتب الأثر" />
+    <meta name="author" content="Ali Ghamdan" />
+    <meta name="robots" content="index, follow" />
+    <link rel="sitemap" href="sitemap.xml" />
     <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#fef9ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <!-- تعديل الرابط عند نشر الموقع على نطاق خاص -->
+    <link rel="canonical" href="https://alighamdan.github.io/athar-website/" />
     <link rel="icon" type="image/svg+xml" href="public/app-icon.svg" />
-    <title>Athar — جامع كتب الأثر</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="public/favicon-32.png" />
+    <link rel="apple-touch-icon" href="public/app-icon-512.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="جامع كتب الأثر" />
+    <meta property="og:title" content="جامع كتب الأثر — اقرأ كتب الآثار والتراجم بلا إنترنت" />
+    <meta property="og:description" content="تطبيق سطح مكتب مفتوح المصدر لقراءة كتب الآثار وتراجم الرواة، ببحثٍ ذكي في المتون والأسانيد وتخريج آلي، ويعمل دون اتصال." />
+    <meta property="og:url" content="https://alighamdan.github.io/athar-website/" />
+    <meta property="og:image" content="https://alighamdan.github.io/athar-website/public/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="ar_AR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="جامع كتب الأثر — اقرأ كتب الآثار والتراجم بلا إنترنت" />
+    <meta name="twitter:description" content="تطبيق سطح مكتب مفتوح المصدر لقراءة كتب الآثار وتراجم الرواة، ببحثٍ ذكي في المتون والأسانيد وتخريج آلي." />
+    <meta name="twitter:image" content="https://alighamdan.github.io/athar-website/public/og-image.png" />
     <link rel="preload" href="fonts/cairo-arabic-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="fonts/amiri-arabic-400-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "جامع كتب الأثر",
+      "alternateName": "Athar",
+      "operatingSystem": "Windows, Linux",
+      "applicationCategory": "EducationalApplication",
+      "applicationSubCategory": "IslamicLibrary",
+      "softwareVersion": "1448.4.3",
+      "inLanguage": "ar",
+      "description": "تطبيق سطح مكتب مفتوح المصدر لقراءة كتب الآثار وتراجم الرواة، ببحثٍ ذكي في المتون والأسانيد وتخريج آلي، ويعمل دون اتصال.",
+      "url": "https://alighamdan.github.io/athar-website/",
+      "downloadUrl": "https://github.com/ali-ghamdan/athar-website/releases/latest",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
     <script>
       (function () {
         var stored = localStorage.getItem("theme");
@@ -237,25 +277,6 @@
               </ul>
             </div>
           </article>
-
-          <article class="page-showcase">
-            <div class="page-shot">
-              <img class="theme-shot light" src="screenshots/light/settings.png" alt="صفحة الإعدادات" width="640" loading="lazy" />
-              <img class="theme-shot dark" src="screenshots/dark/settings.png" alt="صفحة الإعدادات في الوضع الداكن" width="640" loading="lazy" />
-            </div>
-            <div class="page-copy">
-              <h3>الإعدادات</h3>
-              <p class="page-summary">خصّص المظهر والخطوط والتشكيل وسجل البحث، واطّلع على بيانات التطبيق.</p>
-              <ul class="feature-list">
-                <li>الوضع الفاتح والداكن</li>
-                <li>ستة خطوط عربية مع معاينة حية</li>
-                <li>منزلق حجم الخط العام (13–26)</li>
-                <li>مفتاح إظهار التشكيل</li>
-                <li>حفظ خيارات البحث وسجلها</li>
-                <li>دليل درجات الرواة السبع وبيانات التطبيق</li>
-              </ul>
-            </div>
-          </article>
         </div>
       </section>
 
@@ -281,7 +302,7 @@
             <article class="card os-card" data-os="linux">
               <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10V8a2 2 0 0 1 2-2h1V4a2 2 0 0 1 4 0v2h2a2 2 0 0 1 2 2v2"/><path d="M4 10h12v2a2 2 0 0 1-2 2h-2v6h-4v-6H6a2 2 0 0 1-2-2v-2Z"/></svg>
               <h3>لينكس</h3>
-              <p class="os-arch"><bdi>AppImage · deb</bdi></p>
+              <p class="os-arch"><bdi>AppImage · deb · rpm</bdi></p>
               <a class="btn btn-outline os-link" href="#" target="_blank" rel="noopener">تحميل</a>
             </article>
           </div>

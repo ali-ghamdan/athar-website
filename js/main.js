@@ -21,8 +21,8 @@
       arm64: "Athar_" + FALLBACK_VERSION + "_arm64-setup.exe",
     },
     linux: {
-      x64: "athar_" + FALLBACK_VERSION + "_amd64.deb",
-      arm64: "athar_" + FALLBACK_VERSION + "_arm64.deb",
+      x64: "Athar_" + FALLBACK_VERSION + "_amd64.deb",
+      arm64: "Athar_" + FALLBACK_VERSION + "_arm64.deb",
     },
   };
 
@@ -116,7 +116,7 @@
   function render(release) {
     var version = versionFromTag(release && release.tag_name);
     var assets = (release && release.assets) || [];
-    var meta = "الإصدار " + version + " هـ";
+    var meta = version === FALLBACK_VERSION ? "الإصدار " + VERSION_DISPLAY : "الإصدار " + version + " هـ";
     document.getElementById("hero-badge").textContent = "الإصدار " + VERSION_DISPLAY;
     document.getElementById("footer-meta").textContent = meta;
 
