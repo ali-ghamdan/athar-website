@@ -6,8 +6,8 @@
   var RELEASES_LATEST_URL = RELEASES_URL + "/latest";
   var ASSET_DOWNLOAD_URL = "https://github.com/" + REPO + "/releases/latest/download/";
   var API_LATEST_URL = "https://api.github.com/repos/" + REPO + "/releases/latest";
-  var FALLBACK_VERSION = "1448.4.3";
-  var VERSION_DISPLAY = "4/3/1448 هـ";
+  var FALLBACK_VERSION = "1448.6.3";
+  var VERSION_DISPLAY = "6/3/1448 هـ";
   var CACHE_KEY = "athar_release_cache";
   var CACHE_TTL = 60 * 60 * 1000;
   var IGNORED_SUFFIXES = [".blockmap", ".yml", ".yaml", ".sig", ".sha256", ".txt", ".json"];
@@ -22,8 +22,8 @@
       arm64: "Athar_" + FALLBACK_VERSION + "_arm64-setup.exe",
     },
     linux: {
-      x64: "Athar_" + FALLBACK_VERSION + "_amd64.deb",
-      arm64: "Athar_" + FALLBACK_VERSION + "_arm64.deb",
+      x64: "Athar_" + FALLBACK_VERSION + "_amd64.tar.gz",
+      arm64: "Athar_" + FALLBACK_VERSION + "_arm64.tar.gz",
     },
     mac: {
       arm64: "Athar_" + FALLBACK_VERSION + "_aarch64.dmg",
@@ -93,6 +93,7 @@
         if (archMatch(a.name, os, arch)) score += 2;
         if (/\.exe$/.test(a.name)) score += 1;
         if (/\.msi$/.test(a.name)) score += 0;
+        if (/\.tar\.gz$/.test(a.name)) score += 2;
         if (/\.deb$/.test(a.name)) score += 1;
         if (/\.appimage$/.test(a.name)) score += 0;
         if (/\.dmg$/.test(a.name)) score += 1;
