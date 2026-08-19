@@ -29,11 +29,7 @@
       x64: "Athar_" + FALLBACK_VERSION + "_x64.dmg",
     },
   };
-  var PRIMARY_LABELS = {
-    windows: { x64: "تحميل لـ Windows (x64)", arm64: "تحميل لـ Windows (ARM64)" },
-    mac: { arm64: "تحميل لـ macOS (Apple Silicon)", x64: "تحميل لـ macOS (Intel)" },
-    linux: { x64: "تحميل لـ Linux (x64)", arm64: "تحميل لـ Linux (ARM64)" },
-  };
+  var ARCH_LABELS = { x64: "x64", arm64: "ARM64" };
   var KIND_ORDER = [
     "windows-setup",
     "mac-dmg",
@@ -107,20 +103,6 @@
     return true;
   }
 
-  function describeAsset(name) {
-    var lower = name.toLowerCase();
-    var kind = "other";
-    var label = null;
-    if (/setup\.exe$/.test(lower)) kind = "windows-setup", label = "مثبّت Windows";
-    else if (/\.dmg$/.test(lower)) kind = "mac-dmg", label = "قرص التثبيت .dmg";
-    else if (/\.tar\.gz$/.test(lower)) kind = "linux-targz", label = "أرشيف .tar.gz";
-    else if (/\.deb$/.test(lower)) kind = "linux-deb", label = ".deb (Debian/Ubuntu)";
-    else if (/\.rpm$/.test(lower)) kind = "linux-rpm", label = ".rpm (Fedora/SUSE)";
-    else if (/\.appimage$/.test(lower)) kind = "linux-appimage", label = ".AppImage (محمول)";
-    else if (/\.exe$/.test(lower)) kind = "windows-exe", label = ".exe";
-    return { kind: kind, label: label, arch: archFromName(name) };
-  }
-
   function pickAsset(assets, os, arch) {
     var scored = assets
       .filter(function (a) {
@@ -168,27 +150,56 @@
     return version === FALLBACK_VERSION ? VERSION_DISPLAY : version;
   }
 
-  function renderCard(os, assets, label) {
+  function describeAsset(name) {
+    var lower = name.toLowerCase();
+    var kind = "other";
+    var label = null;
+    if (/setup\.exe$/.test(lower)) kind = "windows-setup", label = "Windows installer";
+    else if (/\.dmg$/.test(lower)) kind = "mac-dmg", label = ".dmg";
+    else if (/\.tar\.gz$/.test(lower)) kind = "linux-targz", label = ".tar.gz archive";
+    else if (/\.deb$/.test(lower)) kind = "linux-deb", label = ".deb (Debian/Ubuntu)";
+    else if (/\.rpm$/.test(lower)) kind = "linux-rpm", label = ".rpm (Fedora/SUSE)";
+    else if (/\.appimage$/.test(lower)) kind = "linux-appimage", label = ".AppImage (portable)";
+    else if (/\.exe$/.test(lower)) kind = "windows-exe", label = ".exe";
+    return { kind: kind, label: label, arch: archFromName(name) };
+  }
+
+  function renderCard(os, assets) {
     var card = document.querySelector('.os-card[data-os="' + os + '"]');
     if (!card) return;
     var arch = ARCH_BY_OS[os] || "x64";
-    var link = card.querySelector(".os-link");
+    var link = card.querySelector(".os-download");
+    var more = card.querySelector(".os-more");
+    var drop = card.querySelector(".os-drop");
+    var list = card.querySelector(".os-drop-list");
     var meta = card.querySelector(".os-primary-meta");
-    var extras = card.querySelector(".os-extra");
     var osAssets = (assets || []).filter(function (a) {
       return isDownloadable(a.name) && osMatch(a.name, os);
     });
     var primary = pickAsset(osAssets, os, arch);
+    var fallback =
+      !primary && FALLBACK_ASSETS[os] && FALLBACK_ASSETS[os][arch]
+        ? ASSET_DOWNLOAD_URL + encodeURIComponent(FALLBACK_ASSETS[os][arch])
+        : null;
 
-    link.querySelector(".os-link-label").textContent = PRIMARY_LABELS[os][arch];
     if (primary) {
       setLink(link, primary.browser_download_url);
+      var d = describeAsset(primary.name);
+      var labelText = d.label ? d.label : primary.name;
+      labelText += " " + (d.arch ? (d.arch === "arm64" ? "ARM64" : "x64") : ARCH_LABELS[arch]);
+      link.querySelector(".os-download-label").textContent = labelText;
       var size = humanSize(primary.size);
-      meta.textContent = "الإصدار " + label + (size ? " · " + size : "");
+      meta.textContent = size;
+      meta.hidden = !size;
+    } else if (fallback) {
+      setLink(link, fallback);
+      link.querySelector(".os-download-label").textContent = ARCH_LABELS[arch];
+      meta.textContent = "";
+      meta.hidden = true;
     } else {
-      var fb = FALLBACK_ASSETS[os] && FALLBACK_ASSETS[os][arch];
-      if (fb) setLink(link, ASSET_DOWNLOAD_URL + encodeURIComponent(fb));
-      meta.textContent = "الإصدار " + label;
+      setLink(link, RELEASES_URL);
+      meta.textContent = "";
+      meta.hidden = true;
     }
 
     var rest = osAssets.filter(function (a) {
@@ -206,7 +217,7 @@
       return (b.size || 0) - (a.size || 0);
     });
 
-    extras.innerHTML = "";
+    list.innerHTML = "";
     rest.forEach(function (a) {
       var d = describeAsset(a.name);
       var li = document.createElement("li");
@@ -214,20 +225,57 @@
       el.href = a.browser_download_url;
       el.target = "_blank";
       el.rel = "noopener";
-      var name = document.createElement("bdi");
+      var bdi = document.createElement("bdi");
       var text = d.label ? d.label : a.name;
       if (d.arch) text += " · " + (d.arch === "arm64" ? "ARM64" : "x64");
-      name.textContent = text;
-      el.appendChild(name);
+      bdi.textContent = text;
+      el.appendChild(bdi);
       var size = humanSize(a.size);
       if (size) {
         var span = document.createElement("span");
-        span.className = "extra-name";
+        span.className = "extra-size";
         span.textContent = size;
         el.appendChild(span);
       }
       li.appendChild(el);
-      extras.appendChild(li);
+      list.appendChild(li);
+    });
+
+    more.hidden = rest.length === 0;
+    if (more.hidden) drop.hidden = true;
+  }
+
+  function closeDrops() {
+    document.querySelectorAll(".os-card").forEach(function (card) {
+      card.classList.remove("open");
+      card.querySelector(".os-more") &&
+        card.querySelector(".os-more").setAttribute("aria-expanded", "false");
+      card.querySelector(".os-drop") &&
+        (card.querySelector(".os-drop").hidden = true);
+    });
+  }
+
+  function initDrops() {
+    document.querySelectorAll(".os-card").forEach(function (card) {
+      var more = card.querySelector(".os-more");
+      var drop = card.querySelector(".os-drop");
+      if (!more || !drop) return;
+      more.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var open = drop.hidden;
+        closeDrops();
+        if (open) {
+          card.classList.add("open");
+          more.setAttribute("aria-expanded", "true");
+          drop.hidden = false;
+        }
+      });
+    });
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".os-card")) closeDrops();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeDrops();
     });
   }
 
@@ -241,7 +289,7 @@
     document.getElementById("download-meta").textContent = "الإصدار " + label;
 
     ["windows", "mac", "linux"].forEach(function (os) {
-      renderCard(os, assets, label);
+      renderCard(os, assets);
     });
 
     var primary = document.getElementById("primary-download");
@@ -387,5 +435,6 @@
 
   initTheme();
   initLightbox();
+  initDrops();
   loadRelease();
 })();
