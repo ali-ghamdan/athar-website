@@ -3,13 +3,12 @@
 
   var REPO = "ali-ghamdan/athar-website";
   var RELEASES_URL = "https://github.com/" + REPO + "/releases";
-  var RELEASES_LATEST_URL = RELEASES_URL + "/latest";
   var ASSET_DOWNLOAD_URL = "https://github.com/" + REPO + "/releases/latest/download/";
   var API_LATEST_URL = "https://api.github.com/repos/" + REPO + "/releases/latest";
   var FALLBACK_VERSION = "1448.6.3";
   var VERSION_DISPLAY = "6/3/1448 هـ";
   var CACHE_KEY = "athar_release_cache";
-  var CACHE_TTL = 60 * 60 * 1000;
+  var CACHE_TTL = 10 * 60 * 1000;
   var IGNORED_SUFFIXES = [".blockmap", ".yml", ".yaml", ".sig", ".sha256", ".txt", ".json"];
   var ARCH_BY_OS = {
     windows: "x64",
@@ -30,6 +29,21 @@
       x64: "Athar_" + FALLBACK_VERSION + "_x64.dmg",
     },
   };
+  var PRIMARY_LABELS = {
+    windows: { x64: "تحميل لـ Windows (x64)", arm64: "تحميل لـ Windows (ARM64)" },
+    mac: { arm64: "تحميل لـ macOS (Apple Silicon)", x64: "تحميل لـ macOS (Intel)" },
+    linux: { x64: "تحميل لـ Linux (x64)", arm64: "تحميل لـ Linux (ARM64)" },
+  };
+  var KIND_ORDER = [
+    "windows-setup",
+    "mac-dmg",
+    "linux-targz",
+    "linux-deb",
+    "linux-rpm",
+    "linux-appimage",
+    "windows-exe",
+    "other",
+  ];
 
   var detectedOs = detectOs();
   var detectedArch = detectArch();
@@ -70,8 +84,18 @@
     return false;
   }
 
+  function archFromName(name) {
+    if (/arm64|aarch64/i.test(name)) return "arm64";
+    if (/amd64|x86_64|x64/i.test(name)) return "x64";
+    return null;
+  }
+
   function archMatch(name, os, arch) {
     var lower = name.toLowerCase();
+    if (os === "windows") {
+      if (arch === "arm64") return /arm64/.test(lower);
+      if (arch === "x64") return /x64|amd64|x86_64/.test(lower);
+    }
     if (os === "linux") {
       if (arch === "arm64") return /arm64|aarch64/.test(lower);
       if (arch === "x64") return /amd64|x86_64|x64/.test(lower);
@@ -83,6 +107,20 @@
     return true;
   }
 
+  function describeAsset(name) {
+    var lower = name.toLowerCase();
+    var kind = "other";
+    var label = null;
+    if (/setup\.exe$/.test(lower)) kind = "windows-setup", label = "مثبّت Windows";
+    else if (/\.dmg$/.test(lower)) kind = "mac-dmg", label = "قرص التثبيت .dmg";
+    else if (/\.tar\.gz$/.test(lower)) kind = "linux-targz", label = "أرشيف .tar.gz";
+    else if (/\.deb$/.test(lower)) kind = "linux-deb", label = ".deb (Debian/Ubuntu)";
+    else if (/\.rpm$/.test(lower)) kind = "linux-rpm", label = ".rpm (Fedora/SUSE)";
+    else if (/\.appimage$/.test(lower)) kind = "linux-appimage", label = ".AppImage (محمول)";
+    else if (/\.exe$/.test(lower)) kind = "windows-exe", label = ".exe";
+    return { kind: kind, label: label, arch: archFromName(name) };
+  }
+
   function pickAsset(assets, os, arch) {
     var scored = assets
       .filter(function (a) {
@@ -91,12 +129,12 @@
       .map(function (a) {
         var score = 0;
         if (archMatch(a.name, os, arch)) score += 2;
-        if (/\.exe$/.test(a.name)) score += 1;
-        if (/\.msi$/.test(a.name)) score += 0;
+        if (/setup\.exe$/.test(a.name)) score += 3;
         if (/\.tar\.gz$/.test(a.name)) score += 2;
-        if (/\.deb$/.test(a.name)) score += 1;
-        if (/\.appimage$/.test(a.name)) score += 0;
         if (/\.dmg$/.test(a.name)) score += 1;
+        if (/\.deb$/.test(a.name)) score += 1;
+        if (/\.rpm$/.test(a.name)) score += 0;
+        if (/\.appimage$/.test(a.name)) score += 0;
         if (/-updater/.test(a.name)) score -= 10;
         return { asset: a, score: score };
       })
@@ -126,84 +164,163 @@
     return tag ? tag.replace(/^v/, "") : FALLBACK_VERSION;
   }
 
-  function render(release) {
-    var version = versionFromTag(release && release.tag_name);
-    var assets = (release && release.assets) || [];
-    var meta = version === FALLBACK_VERSION ? "الإصدار " + VERSION_DISPLAY : "الإصدار " + version + " هـ";
-    document.getElementById("hero-badge").textContent = "الإصدار " + VERSION_DISPLAY;
-    document.getElementById("footer-meta").textContent = meta;
+  function versionLabel(version) {
+    return version === FALLBACK_VERSION ? VERSION_DISPLAY : version;
+  }
 
-    var primary = document.getElementById("primary-download");
-    var osCards = document.querySelectorAll(".os-card");
-    var anyMatched = false;
+  function renderCard(os, assets, label) {
+    var card = document.querySelector('.os-card[data-os="' + os + '"]');
+    if (!card) return;
+    var arch = ARCH_BY_OS[os] || "x64";
+    var link = card.querySelector(".os-link");
+    var meta = card.querySelector(".os-primary-meta");
+    var extras = card.querySelector(".os-extra");
+    var osAssets = (assets || []).filter(function (a) {
+      return isDownloadable(a.name) && osMatch(a.name, os);
+    });
+    var primary = pickAsset(osAssets, os, arch);
 
-    osCards.forEach(function (card) {
-      var os = card.getAttribute("data-os");
-      var arch = ARCH_BY_OS[os] || "x64";
-      var link = card.querySelector(".os-link");
-      var asset = pickAsset(assets, os, arch);
-      var url = null;
+    link.querySelector(".os-link-label").textContent = PRIMARY_LABELS[os][arch];
+    if (primary) {
+      setLink(link, primary.browser_download_url);
+      var size = humanSize(primary.size);
+      meta.textContent = "الإصدار " + label + (size ? " · " + size : "");
+    } else {
+      var fb = FALLBACK_ASSETS[os] && FALLBACK_ASSETS[os][arch];
+      if (fb) setLink(link, ASSET_DOWNLOAD_URL + encodeURIComponent(fb));
+      meta.textContent = "الإصدار " + label;
+    }
 
-      if (asset) {
-        url = asset.browser_download_url;
-        var size = humanSize(asset.size);
-        var archLabel = card.querySelector(".os-arch");
-        if (archLabel && size) archLabel.textContent = archLabel.textContent + " · " + size;
-      } else {
-        var fallback = FALLBACK_ASSETS[os] && FALLBACK_ASSETS[os][arch];
-        if (fallback) url = ASSET_DOWNLOAD_URL + encodeURIComponent(fallback);
-      }
-      setLink(link, url);
+    var rest = osAssets.filter(function (a) {
+      return a !== primary;
+    });
+    rest.sort(function (a, b) {
+      var da = describeAsset(a.name);
+      var db = describeAsset(b.name);
+      var ia = KIND_ORDER.indexOf(da.kind);
+      var ib = KIND_ORDER.indexOf(db.kind);
+      if (ia !== ib) return ia - ib;
+      var ma = archMatch(a.name, os, arch) ? 1 : 0;
+      var mb = archMatch(b.name, os, arch) ? 1 : 0;
+      if (ma !== mb) return mb - ma;
+      return (b.size || 0) - (a.size || 0);
     });
 
-    var heroAsset = null;
+    extras.innerHTML = "";
+    rest.forEach(function (a) {
+      var d = describeAsset(a.name);
+      var li = document.createElement("li");
+      var el = document.createElement("a");
+      el.href = a.browser_download_url;
+      el.target = "_blank";
+      el.rel = "noopener";
+      var name = document.createElement("bdi");
+      var text = d.label ? d.label : a.name;
+      if (d.arch) text += " · " + (d.arch === "arm64" ? "ARM64" : "x64");
+      name.textContent = text;
+      el.appendChild(name);
+      var size = humanSize(a.size);
+      if (size) {
+        var span = document.createElement("span");
+        span.className = "extra-name";
+        span.textContent = size;
+        el.appendChild(span);
+      }
+      li.appendChild(el);
+      extras.appendChild(li);
+    });
+  }
+
+  function render(release) {
+    var version = versionFromTag(release && release.tag_name);
+    var label = versionLabel(version);
+    var assets = (release && release.assets) || [];
+
+    document.getElementById("hero-badge").textContent = "الإصدار " + label;
+    document.getElementById("footer-meta").textContent = "الإصدار " + label;
+    document.getElementById("download-meta").textContent = "الإصدار " + label;
+
+    ["windows", "mac", "linux"].forEach(function (os) {
+      renderCard(os, assets, label);
+    });
+
+    var primary = document.getElementById("primary-download");
+    var url = null;
     if (detectedOs && detectedArch) {
-      heroAsset = pickAsset(assets, detectedOs, detectedArch);
+      var heroAsset = pickAsset(assets, detectedOs, detectedArch);
+      if (heroAsset) {
+        url = heroAsset.browser_download_url;
+      } else if (FALLBACK_ASSETS[detectedOs]) {
+        var fb =
+          FALLBACK_ASSETS[detectedOs][detectedArch] || FALLBACK_ASSETS[detectedOs].x64;
+        url = ASSET_DOWNLOAD_URL + encodeURIComponent(fb);
+      }
     }
-    var heroUrl = null;
-    if (heroAsset) {
-      heroUrl = heroAsset.browser_download_url;
-    } else if (detectedOs && FALLBACK_ASSETS[detectedOs]) {
-      var fb = FALLBACK_ASSETS[detectedOs][detectedArch] || FALLBACK_ASSETS[detectedOs].x64;
-      heroUrl = ASSET_DOWNLOAD_URL + encodeURIComponent(fb);
-    }
-    if (heroUrl) {
-      setLink(primary, heroUrl);
-      anyMatched = true;
-    }
-    if (detectedOs && !anyMatched) {
-      setLink(primary, RELEASES_URL);
-    }
+    if (!url) url = RELEASES_URL;
+    setLink(primary, url);
   }
 
   function renderFallback() {
     render(null);
   }
 
-  function loadRelease() {
+  function readCache() {
     try {
-      var cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
-      if (cached && cached.ts && Date.now() - cached.ts < CACHE_TTL) {
-        render(cached.data);
-        return;
-      }
+      return JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
     } catch (e) {
-      cached = null;
+      return null;
+    }
+  }
+
+  function writeCache(entry) {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(entry));
+    } catch (e) {}
+  }
+
+  function loadRelease() {
+    var cached = readCache();
+    if (cached && cached.data && cached.ts && Date.now() - cached.ts < CACHE_TTL) {
+      render(cached.data);
+      return;
     }
 
-    fetch(API_LATEST_URL, { headers: { Accept: "application/vnd.github+json" } })
+    var headers = { Accept: "application/vnd.github+json" };
+    if (cached && cached.etag) headers["If-None-Match"] = cached.etag;
+
+    fetch(API_LATEST_URL, { headers: headers })
       .then(function (res) {
+        if (res.status === 304) {
+          if (cached && cached.data) {
+            cached.ts = Date.now();
+            writeCache(cached);
+            render(cached.data);
+          } else {
+            renderFallback();
+          }
+          return null;
+        }
         if (!res.ok) throw new Error("api " + res.status);
-        return res.json();
+        return res.json().then(function (data) {
+          return {
+            ts: Date.now(),
+            etag: res.headers.get("etag") || "",
+            data: data,
+          };
+        });
       })
-      .then(function (data) {
-        try {
-          localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: data }));
-        } catch (e) {}
-        render(data);
+      .then(function (entry) {
+        if (entry) {
+          writeCache(entry);
+          render(entry.data);
+        }
       })
       .catch(function () {
-        renderFallback();
+        if (cached && cached.data) {
+          render(cached.data);
+        } else {
+          renderFallback();
+        }
       });
   }
 
