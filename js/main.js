@@ -5,8 +5,8 @@
   var RELEASES_URL = "https://github.com/" + REPO + "/releases";
   var ASSET_DOWNLOAD_URL = "https://github.com/" + REPO + "/releases/latest/download/";
   var API_LATEST_URL = "https://api.github.com/repos/" + REPO + "/releases/latest";
-  var FALLBACK_VERSION = "1448.6.3";
-  var VERSION_DISPLAY = "6/3/1448 هـ";
+  var FALLBACK_VERSION = "1448.8.3";
+  var VERSION_DISPLAY = "8/3/1448 هـ";
   var CACHE_KEY = "athar_release_cache";
   var CACHE_TTL = 10 * 60 * 1000;
   var IGNORED_SUFFIXES = [".blockmap", ".yml", ".yaml", ".sig", ".sha256", ".txt", ".json"];
